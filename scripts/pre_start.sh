@@ -30,14 +30,16 @@ chmod 755 /workspace/ComfyUI
 # Check if /ComfyUI exists and is not already a symlink
 if [ -d "/ComfyUI" ] && [ ! -L "/ComfyUI" ]; then
     echo "**** SETTING UP COMFYUI IN WORKSPACE ****"
-    # Only copy if /workspace/ComfyUI is empty or doesn't exist
-    if [ -z "$(ls -A /workspace/ComfyUI)" ]; then
-        # Copy files instead of moving to avoid potential issues
+    
+    # Check if directory has content (similar to model check)
+    if [ -d "/workspace/ComfyUI" ] && [ "$(ls -A /workspace/ComfyUI)" ]; then
+        echo "✅ Existing ComfyUI installation found - preserving it"
+    else
+        # Copy files only if empty
         cp -rf /ComfyUI/* /workspace/ComfyUI/
         cp -rf /ComfyUI/.??* /workspace/ComfyUI/ 2>/dev/null || true
-    else
-        echo "Existing ComfyUI installation found - preserving it"
     fi
+    
     rm -rf /ComfyUI
     # Create symlink
     ln -sf /workspace/ComfyUI /ComfyUI
